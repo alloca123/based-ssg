@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if defined(__Openbsd__)
+#include <unistd.h>
+#endif
 int smu_convert(FILE *out, FILE *source, int supresshtml);
 /* function to find and replac the title*/
 char           *
@@ -65,16 +68,14 @@ generate_files(char *line)
 	free(result);
 	fclose(article);
 
-/*	char 		lowdown_cmd[250];
-	sprintf(lowdown_cmd, "lowdown -Thtml %s >> %s", stuff[1], stuff[3]);
-	system(lowdown_cmd); */
 	FILE *article2, *markdown;
 	article2 = fopen(stuff[3], "a+");
 	markdown = fopen(stuff[1], "rw+");
 	smu_convert(article2, markdown, 0);
-	fflush(article2);
+	/* I have to close and reopen yet again or else it fucks up */
+	fclose(article2);
+	article2 = fopen(stuff[3], "a+");
 	fputs("</article>", article2);
-	fclose(article);
 	fclose(article2);
 	fclose(markdown);
 }
@@ -82,6 +83,9 @@ generate_files(char *line)
 int
 main(int argc, char *argv[])
 {
+ #if defined(__Openbsd__)
+	pledge("stdio rpath wpath", NULL);
+#endif
 	if (argc < 2) {
                 printf("usage:\nbased-ssg files.conf\n");
                 return 0;
@@ -99,7 +103,7 @@ main(int argc, char *argv[])
 	/*
 	 * i have to close and reopen or else things fuck up for some weird
 	 * reason
-	 */
+	*/ 
 	fclose(fp);
 	fp = fopen(argv[1], "r");
 	char c[200];
