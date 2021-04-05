@@ -4,8 +4,8 @@
 #if defined(__Openbsd__)
 #include <unistd.h>
 #endif
-int smu_convert(FILE *out, FILE *source, int supresshtml);
-/* function to find and replac the title*/
+int 		smu_convert(FILE * out, FILE * source, int supresshtml);
+/* function to find and replac the title */
 char           *
 replaceword(const char *s, const char *oldW,
 	    const char *newW)
@@ -68,7 +68,7 @@ generate_files(char *line)
 	free(result);
 	fclose(article);
 
-	FILE *article2, *markdown;
+	FILE           *article2, *markdown;
 	article2 = fopen(stuff[3], "a+");
 	markdown = fopen(stuff[1], "rw+");
 	smu_convert(article2, markdown, 0);
@@ -83,13 +83,13 @@ generate_files(char *line)
 int
 main(int argc, char *argv[])
 {
- #if defined(__Openbsd__)
+#if defined(__Openbsd__)
 	pledge("stdio rpath wpath", NULL);
 #endif
 	if (argc < 2) {
-                printf("usage:\nbased-ssg files.conf\n");
-                return 0;
-        }
+		printf("usage:\nbased-ssg files.conf\n");
+		return 0;
+	}
 	FILE           *fp;
 	/* open file */
 	fp = fopen(argv[1], "r");
@@ -103,10 +103,10 @@ main(int argc, char *argv[])
 	/*
 	 * i have to close and reopen or else things fuck up for some weird
 	 * reason
-	*/ 
+	*/
 	fclose(fp);
 	fp = fopen(argv[1], "r");
-	char c[200];
+	char 		c        [200];
 	wc = 1;
 	while (!exit) {
 		/* read each line */
