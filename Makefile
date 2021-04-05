@@ -1,8 +1,13 @@
+PREFIX ?= /usr/local
+CC ?= cc
+INSTALL ?= install
+
 all:
-	cc based-ssg.c libsmu.c -o based-ssg -march=native -std=c89 -O2
+	$(CC) based-ssg.c libsmu.c -o based-ssg -march=native -std=c89 -O2 $(CFLAGS)
 install:
-	cp based-ssg /usr/local/bin
+	$(INSTALL) -d $(PREFIX)/bin
+	$(INSTALL) based-ssg $(PREFIX)/bin/
 clean:
-	rm based-ssg
+	rm -f based-ssg
 uninstall:
-	rm /usr/local/bin/based-ssg
+	rm -f $(PREFIX)/bin/based-ssg
