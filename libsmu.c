@@ -3,7 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
+/*
+ * This is a modified version of smu to work with based-ssg
+ * (c) 2007-2014 Enno Boland <g s01 de> (c) 2021 alloca123
+ */
 #define LENGTH(x)  sizeof(x)/sizeof(x[0])
 #define ADDC(b,i)  if(i % BUFSIZ == 0) { b = realloc(b, (i + BUFSIZ) * sizeof(char)); if(!b) eprint("Malloc failed."); } b[i]
 FILE           *output;
