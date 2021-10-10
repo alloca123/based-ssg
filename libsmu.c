@@ -674,9 +674,6 @@ smu_convert(FILE * out, FILE * source, int supresshtml)
 	}
 	buffer[len] = '\0';
 	process(buffer, buffer + len, 1);
-	fclose(out);
-	fclose(source);
-	fclose(output);
 	free(buffer);
 	return EXIT_SUCCESS;
 }
