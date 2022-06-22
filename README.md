@@ -1,4 +1,6 @@
 based-ssg is a very based, minimal, and flexible static site generator written in pure C89 with no external deps.
+# based-ssg now supports RSS
+check config.h to configure rss
 # Installation
 to install based-ssg, just run:
 ```

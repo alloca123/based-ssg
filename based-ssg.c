@@ -1,3 +1,10 @@
+/* Copyright 2021 alloca123
+
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -73,6 +80,17 @@ generate_files(char *line)
 	article2 = fopen(stuff[2], "a+");
 	markdown = fopen(stuff[0], "rw+");
 	smu_convert(article2, markdown, 0);
+	if(genrss){
+	fseek(markdown, 0, SEEK_END);
+	long 		fpsize = ftell(markdown);
+	fseek(markdown, 0, SEEK_SET);
+	char           *file = malloc(fpsize + 1);
+	fread(file, 1, fpsize, markdown);
+	FILE *fp = fopen("rss.xml", "a+");
+	fprintf(fp, "\n\t<item>\n\t\t<title>%s</title>\n\t\t<link>%s%s</link>\n\t\t<description><![CDATA[<pre>\n%s\n</pre>]]></description>\n\t</item>", stuff[1], url, stuff[2] + 1, file);
+	free(file);
+	fclose (fp);
+	}
 	rewind(article2);
 	fputs(appendhtml, article2);
 	fclose(article2);
@@ -100,8 +118,13 @@ main(int argc, char *argv[])
 			nc++;
 	}
 	rewind(fp);
+	if(genrss){
+	FILE *rss = fopen("rss.xml", "w");
+	fprintf(rss, "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n<channel>\n<atom:link href=\"%s/rss.xml\" rel=\"self\" type=\"application/rss+xml\"/>\n\t<link>%s</link>\n\t<title>%s</title>\n\t<description>%s</description>\n\t<generator>https://alloca.dev/git/based-ssg</generator>\n", url, url, rsstitle, rssdesc);
+	fclose(rss);
+	}
 	char 		c        [200];
-	wc = nc - 1;
+	wc = nc;
 	fseek(fp, 0, SEEK_END);
 	long 		fpsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -119,7 +142,7 @@ main(int argc, char *argv[])
 		/* build the pages */
 		generate_files(lines[wc]);
 		wc--;
-		if (wc -1) {
+		if (wc == 0) {
 			exit = 1;
 		}
 	}
