@@ -124,7 +124,7 @@ main(int argc, char *argv[])
 	fclose(rss);
 	}
 	char 		c        [200];
-	wc = nc;
+	wc = nc - 1;
 	fseek(fp, 0, SEEK_END);
 	long 		fpsize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -142,7 +142,7 @@ main(int argc, char *argv[])
 		/* build the pages */
 		generate_files(lines[wc]);
 		wc--;
-		if (wc == 0) {
+		if (wc == -1) {
 			exit = 1;
 		}
 	}
